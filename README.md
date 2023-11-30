@@ -2,10 +2,10 @@
 
 Simple CRUD app with mysql
 
-## Install
+# Install
 
+**Run app with docker**
 
-- Run app with docker
 ```bash
 git clone https://github.com/danangkonang/go-crud-mysql.git
 
@@ -14,7 +14,7 @@ cd go-crud-mysql
 docker-compose up --build -d
 ```
 
-- Run app on local
+**Run app on local**
 
 `setup your database enviroment in .env file`
 ```

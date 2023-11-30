@@ -6,6 +6,8 @@ COPY . .
 
 RUN go mod tidy
 
+RUN go test -v ./...
+
 RUN CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s" -o app main.go
 
 FROM alpine

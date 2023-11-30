@@ -28,6 +28,8 @@ go run main.go
 
 # Postman
 
+- Download [crud.postman_collection.json](https://raw.githubusercontent.com/danangkonang/nest-micro/master/crud.postman_collection.json)
+
 # Sql
 
 `sql table auto generate after app run`

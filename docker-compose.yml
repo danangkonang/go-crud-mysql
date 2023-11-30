@@ -1,0 +1,35 @@
+version: "3"
+services:
+  mysql:
+    image: mysql:8.2.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - "3306:3306"
+    networks:
+      - net-app
+    environment:
+      - MYSQL_ROOT_PASSWORD=secure-pwd
+      - MYSQL_USER=secure-user
+      - MYSQL_PASSWORD=secure-pwd
+      - MYSQL_DATABASE=db-app
+    volumes:
+      - mysql:/var/lib/mysql
+    container_name: db
+  app:
+    build:
+      dockerfile: Dockerfile
+    networks:
+      - net-app
+    restart: always
+    ports:
+      - "9000:9000"
+    environment:
+      - DB_HOST=mysql
+    depends_on:
+      - mysql
+    container_name: app
+networks:
+  net-app:
+volumes:
+  mysql:

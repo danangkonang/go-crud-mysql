@@ -1,0 +1,30 @@
+POST http://localhost:9000/api/v1/user
+Content-Type: application/json
+
+{
+  "name": "Bambang",
+  "email": "bambang@gmail.com",
+  "phone": "081323423456"
+}
+###
+PUT http://localhost:9000/api/v1/user
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "name": "Budi",
+  "email": "bambang@gmail.com",
+  "phone": "081323423456"
+}
+###
+DELETE http://localhost:9000/api/v1/user
+Content-Type: application/json
+
+{
+  "user_id": 1
+}
+###
+GET http://localhost:9000/api/v1/user/1
+###
+GET http://localhost:9000/api/v1/users
+###

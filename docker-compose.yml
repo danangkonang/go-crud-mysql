@@ -16,19 +16,19 @@ services:
     volumes:
       - mysql:/var/lib/mysql
     container_name: db
-  app:
-    build:
-      dockerfile: Dockerfile
-    networks:
-      - net-app
-    restart: always
-    ports:
-      - "9000:9000"
-    environment:
-      - DB_HOST=mysql
-    depends_on:
-      - mysql
-    container_name: app
+  # app:
+  #   build:
+  #     dockerfile: Dockerfile
+  #   networks:
+  #     - net-app
+  #   restart: always
+  #   ports:
+  #     - "9000:9000"
+  #   environment:
+  #     - DB_HOST=mysql
+  #   depends_on:
+  #     - mysql
+  #   container_name: app
 networks:
   net-app:
 volumes:

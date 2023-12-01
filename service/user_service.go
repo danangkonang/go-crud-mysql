@@ -87,9 +87,13 @@ func (s UserService) DestroyUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.userRepository.DestroyUser(user.Id)
+	row, err := s.userRepository.DestroyUser(user.Id)
 	if err != nil {
 		util.Json(w, 500, "Internal Server Error", nil)
+		return
+	}
+	if row == 0 {
+		util.Json(w, 400, "Id Not Found", nil)
 		return
 	}
 	util.Json(w, 200, "Successfuly", nil)
@@ -110,9 +114,13 @@ func (s UserService) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.userRepository.UpdateUser(&user)
+	row, err := s.userRepository.UpdateUser(&user)
 	if err != nil {
 		util.Json(w, 500, "Internal Server Error", nil)
+		return
+	}
+	if row == 0 {
+		util.Json(w, 400, "Id Not Found", nil)
 		return
 	}
 	util.Json(w, 200, "Successfuly", user)

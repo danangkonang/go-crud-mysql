@@ -9,8 +9,8 @@ type UserRepository interface {
 	FindUserById(id int64) (*entity.ResponseUser, error)
 	FindUsers() ([]*entity.ResponseUser, error)
 	StoreUser(*entity.StoreUser) (int64, error)
-	DestroyUser(id int64) error
-	UpdateUser(*entity.UpdateUser) error
+	DestroyUser(id int64) (int64, error)
+	UpdateUser(*entity.UpdateUser) (int64, error)
 }
 
 type repository struct {
@@ -59,21 +59,23 @@ func (r repository) StoreUser(u *entity.StoreUser) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	ID, _ := row.LastInsertId()
-	return ID, nil
+	return row.LastInsertId()
 }
 
-func (r repository) DestroyUser(id int64) error {
+func (r repository) DestroyUser(id int64) (int64, error) {
 	query := "DELETE FROM users WHERE user_id=?"
-	_, err := r.db.Mysql.Exec(query, id)
+	row, err := r.db.Mysql.Exec(query, id)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return row.RowsAffected()
 }
 
-func (r repository) UpdateUser(u *entity.UpdateUser) error {
+func (r repository) UpdateUser(u *entity.UpdateUser) (int64, error) {
 	query := "UPDATE users SET name=?, email=?, phone=? WHERE user_id=?"
-	_, err := r.db.Mysql.Exec(query, u.Name, u.Email, u.Phone, u.Id)
-	return err
+	row, err := r.db.Mysql.Exec(query, u.Name, u.Email, u.Phone, u.Id)
+	if err != nil {
+		return 0, err
+	}
+	return row.RowsAffected()
 }

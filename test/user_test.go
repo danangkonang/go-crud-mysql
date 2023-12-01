@@ -230,6 +230,46 @@ func TestUpdateUser(t *testing.T) {
 		defer con.Mysql.Close()
 
 		query := "UPDATE users SET name=?, email=?, phone=? WHERE user_id=?"
+		mock.ExpectExec(query).WithArgs(v.body.Name, v.body.Email, v.body.Phone, v.body.Id).WillReturnResult(sqlmock.NewResult(0, 1))
+		b, err := json.Marshal(v.body)
+		if err != nil {
+			t.Error(err.Error())
+		}
+
+		request, _ := http.NewRequest("PUT", "/api/v1/user", bytes.NewBuffer([]byte(b)))
+		response := httptest.NewRecorder()
+		UserServer(&database.Database{Mysql: con.Mysql}).ServeHTTP(response, request)
+		assert.Equal(t, v.status, response.Code)
+
+	}
+}
+
+func TestUpdateUserNotFound(t *testing.T) {
+	sample := []struct {
+		status int
+		body   *entity.UpdateUser
+	}{
+		{
+			status: 400,
+			body: &entity.UpdateUser{
+				Id:    1,
+				Name:  "bar",
+				Email: "foo@email.com",
+				Phone: "08123123123",
+			},
+		},
+	}
+	for _, v := range sample {
+		sqlDB, mock, err := NewMock()
+		if err != nil {
+			t.Fatal(err)
+		}
+		con := &Database{
+			Mysql: sqlDB,
+		}
+		defer con.Mysql.Close()
+
+		query := "UPDATE users SET name=?, email=?, phone=? WHERE user_id=?"
 		mock.ExpectExec(query).WithArgs(v.body.Name, v.body.Email, v.body.Phone, v.body.Id).WillReturnResult(sqlmock.NewResult(0, 0))
 		b, err := json.Marshal(v.body)
 		if err != nil {
@@ -258,6 +298,44 @@ func TestDeleteUser(t *testing.T) {
 		{
 			status: 400,
 			body:   &entity.DestroyeUser{},
+		},
+	}
+	for _, v := range sample {
+		sqlDB, mock, err := NewMock()
+		if err != nil {
+			t.Fatal(err)
+		}
+		con := &Database{
+			Mysql: sqlDB,
+		}
+		defer con.Mysql.Close()
+
+		query := "DELETE FROM users WHERE user_id=?"
+		mock.ExpectExec(query).WithArgs(v.body.Id).WillReturnResult(sqlmock.NewResult(0, 1))
+
+		b, err := json.Marshal(v.body)
+		if err != nil {
+			t.Error(err.Error())
+		}
+
+		request, _ := http.NewRequest("DELETE", "/api/v1/user", bytes.NewBuffer(b))
+		response := httptest.NewRecorder()
+		UserServer(&database.Database{Mysql: con.Mysql}).ServeHTTP(response, request)
+		assert.Equal(t, v.status, response.Code)
+
+	}
+}
+
+func TestDeleteUserNotFound(t *testing.T) {
+	sample := []struct {
+		status int
+		body   *entity.DestroyeUser
+	}{
+		{
+			status: 400,
+			body: &entity.DestroyeUser{
+				Id: 1,
+			},
 		},
 	}
 	for _, v := range sample {
